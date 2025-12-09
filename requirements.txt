@@ -1,4 +1,4 @@
-# Core
+# Core Data Processing
 numpy
 pandas
 
@@ -6,18 +6,22 @@ pandas
 matplotlib
 seaborn
 
-
-# Machine Learning
+# Machine Learning & Deep Learning
 scikit-learn
-statsmodels
+scikit-image
+torch
+torchvision
+fastai
 
+# Parallel Processing
+joblib
+
+# Image Processing
+Pillow
+opencv-python
 
 # Jupyter & Development
 jupyter
 notebook
 ipython
-
-
-
-
-
+jupytext

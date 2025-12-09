@@ -1,0 +1,59 @@
+[
+  {
+    "filename": "covid_01.jpg",
+    "stage1": {
+      "prediction": "Pneumonia",
+      "confidence": {
+        "Normal": "PLACEHOLDER",
+        "Pneumonia": "PLACEHOLDER"
+      }
+    },
+    "stage2": {
+      "prediction": "Viral",
+      "confidence": {
+        "Bacterial": "PLACEHOLDER",
+        "Viral": "PLACEHOLDER"
+      }
+    },
+    "final_diagnosis": "Viral Pneumonia",
+    "note": "Test this image in the Gradio app and update with actual confidence scores"
+  },
+  {
+    "filename": "covid_02.jpg",
+    "stage1": {
+      "prediction": "Pneumonia",
+      "confidence": {
+        "Normal": "PLACEHOLDER",
+        "Pneumonia": "PLACEHOLDER"
+      }
+    },
+    "stage2": {
+      "prediction": "Viral",
+      "confidence": {
+        "Bacterial": "PLACEHOLDER",
+        "Viral": "PLACEHOLDER"
+      }
+    },
+    "final_diagnosis": "Viral Pneumonia",
+    "note": "Test this image in the Gradio app and update with actual confidence scores"
+  },
+  {
+    "filename": "covid_03.jpg",
+    "stage1": {
+      "prediction": "Pneumonia",
+      "confidence": {
+        "Normal": "PLACEHOLDER",
+        "Pneumonia": "PLACEHOLDER"
+      }
+    },
+    "stage2": {
+      "prediction": "Viral",
+      "confidence": {
+        "Bacterial": "PLACEHOLDER",
+        "Viral": "PLACEHOLDER"
+      }
+    },
+    "final_diagnosis": "Viral Pneumonia",
+    "note": "Test this image in the Gradio app and update with actual confidence scores"
+  }
+]

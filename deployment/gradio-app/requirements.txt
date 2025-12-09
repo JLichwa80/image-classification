@@ -1,0 +1,9 @@
+gradio
+fastai
+torch
+torchvision
+opencv-python-headless
+Pillow
+numpy
+matplotlib
+scikit-image

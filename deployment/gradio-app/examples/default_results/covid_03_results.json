@@ -1,0 +1,52 @@
+{
+  "prediction": {
+    "Stage 1: Pneumonia Detection": {
+      "Prediction": "Pneumonia",
+      "Normal": "0.0072",
+      "Pneumonia": "0.9928"
+    },
+    "Stage 2: Pneumonia Type": {
+      "Prediction": "Viral",
+      "Bacterial": "0.2100",
+      "Viral": "0.7900"
+    }
+  },
+  "prediction_df": [
+    {
+      "Stage": "Stage 1",
+      "Result": "Pneumonia",
+      "Confidence": "99.3%"
+    },
+    {
+      "Stage": "Stage 2",
+      "Result": "Viral",
+      "Confidence": "79.0%"
+    }
+  ],
+  "config_df": [
+    {
+      "Parameter": "CLAHE Clip Limit",
+      "Value": "2.0"
+    },
+    {
+      "Parameter": "CLAHE Tile Grid Size",
+      "Value": "(8, 8)"
+    },
+    {
+      "Parameter": "Colormap",
+      "Value": "COLORMAP_HOT"
+    }
+  ],
+  "metrics_df": [
+    {
+      "Metric": "Mean",
+      "Original": "136.09",
+      "CLAHE + Colormap": "141.76"
+    },
+    {
+      "Metric": "Std Dev",
+      "Original": "47.78",
+      "CLAHE + Colormap": "50.68"
+    }
+  ]
+}

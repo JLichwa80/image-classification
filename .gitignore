@@ -18,6 +18,8 @@ data/
 *.pt
 *.h5
 *.ckpt
+*.pkl
+models/
 
 # Python
 __pycache__/

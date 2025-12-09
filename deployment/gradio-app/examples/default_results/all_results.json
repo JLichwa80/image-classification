@@ -1,0 +1,44 @@
+{
+  "covid_01": {
+    "prediction": {
+      "Stage 1: Pneumonia Detection": {
+        "Prediction": "Pneumonia",
+        "Normal": "0.0008",
+        "Pneumonia": "0.9992"
+      },
+      "Stage 2: Pneumonia Type": {
+        "Prediction": "Viral",
+        "Bacterial": "0.1265",
+        "Viral": "0.8735"
+      }
+    }
+  },
+  "covid_02": {
+    "prediction": {
+      "Stage 1: Pneumonia Detection": {
+        "Prediction": "Pneumonia",
+        "Normal": "0.2692",
+        "Pneumonia": "0.7308"
+      },
+      "Stage 2: Pneumonia Type": {
+        "Prediction": "Bacterial",
+        "Bacterial": "0.6500",
+        "Viral": "0.3500"
+      }
+    }
+  },
+  "covid_03": {
+    "prediction": {
+      "Stage 1: Pneumonia Detection": {
+        "Prediction": "Pneumonia",
+        "Normal": "0.0072",
+        "Pneumonia": "0.9928"
+      },
+      "Stage 2: Pneumonia Type": {
+        "Prediction": "Viral",
+        "Bacterial": "0.2100",
+        "Viral": "0.7900"
+      }
+    }
+  }
+}
