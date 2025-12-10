@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
+import matplotlib
+matplotlib.use('Agg')  # Use non-GUI backend for Docker/headless environments
 import matplotlib.pyplot as plt
 import io
 
@@ -251,27 +253,12 @@ def create_composite_image(img, diagnosis_info):
     confidence = diagnosis_info.get('confidence', 0)
     text = f"{icon} {diagnosis} - {confidence:.1f}%"
 
-    font = None
-    font_paths = [
-        "C:/Windows/Fonts/arialbd.ttf",
-        "C:/Windows/Fonts/arial.ttf",
-        "C:/Windows/Fonts/segoeui.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-    ]
-
-    for font_path in font_paths:
-        try:
-            font = ImageFont.truetype(font_path, font_size)
-            break
-        except OSError:
-            continue
-
-    if font is None:
-        try:
-            font = ImageFont.load_default(size=font_size)
-        except TypeError:
-            font = ImageFont.load_default()
+    # Use Pillow's built-in default font (works on all platforms)
+    try:
+        font = ImageFont.load_default(size=font_size)
+    except TypeError:
+        # Older Pillow versions don't support size parameter
+        font = ImageFont.load_default()
 
     bbox = draw.textbbox((0, 0), text, font=font)
     text_width = bbox[2] - bbox[0]

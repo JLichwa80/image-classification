@@ -41,3 +41,6 @@ ENV/
 *.swp
 *.swo
 *~
+
+# Local config
+*.local.json

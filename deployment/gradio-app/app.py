@@ -6,6 +6,8 @@ import platform
 import logging
 import sys
 
+from huggingface_hub import hf_hub_download
+
 from custom_transforms import CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID_SIZE, COLORMAP_SELECTION
 from config import AppConfig
 from view import create_app_ui
@@ -18,8 +20,37 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Handle path compatibility between Windows and Linux
+# Models saved on Windows use WindowsPath, but Linux needs PosixPath
 if platform.system() == 'Windows':
     pathlib.PosixPath = pathlib.WindowsPath
+else:
+    # Running on Linux (e.g., Hugging Face Spaces) - need to handle Windows-saved models
+    pathlib.WindowsPath = pathlib.PosixPath
+
+# Hugging Face Model Repository
+HF_MODEL_REPO = "Jlichwa/Pneumonia-Detector-Models"
+MODEL_FILES = {
+    "stage1": "set2_pneumonia_detector_final.pkl",
+    "stage2": "set2_stage2_bacterial_viral_detector_final.pkl"
+}
+
+def download_models(models_dir: Path):
+    """Download models from Hugging Face Hub if they don't exist locally."""
+    models_dir.mkdir(parents=True, exist_ok=True)
+
+    for model_key, filename in MODEL_FILES.items():
+        local_path = models_dir / filename
+        if not local_path.exists():
+            logger.info(f"Downloading {filename} from Hugging Face Hub...")
+            hf_hub_download(
+                repo_id=HF_MODEL_REPO,
+                filename=filename,
+                local_dir=models_dir
+            )
+            logger.info(f"Downloaded {filename}")
+        else:
+            logger.info(f"{filename} already exists locally")
 
 
 class SessionCounter:
@@ -61,10 +92,18 @@ config.clahe_colormap = COLORMAP_SELECTION
 
 counter = SessionCounter(config.counter_file)
 
-logger.info(f"Loading Stage 1 model from {config.stage1_model_path}")
-stage1_model = load_learner(config.stage1_model_path)
-logger.info(f"Loading Stage 2 model from {config.stage2_model_path}")
-stage2_model = load_learner(config.stage2_model_path)
+# Download models from Hugging Face Hub if not present
+models_dir = config.app_dir / "models"
+download_models(models_dir)
+
+# Load models
+stage1_path = models_dir / MODEL_FILES["stage1"]
+stage2_path = models_dir / MODEL_FILES["stage2"]
+
+logger.info(f"Loading Stage 1 model from {stage1_path}")
+stage1_model = load_learner(stage1_path)
+logger.info(f"Loading Stage 2 model from {stage2_path}")
+stage2_model = load_learner(stage2_path)
 logger.info("Models loaded")
 
 gr.set_static_paths(paths=[str(config.app_dir / "assets"), str(config.examples_dir)])
@@ -98,6 +137,8 @@ if __name__ == "__main__":
     os.environ['GRADIO_ANALYTICS_ENABLED'] = 'False'
 
     demo.launch(
+        server_name="0.0.0.0",
+        server_port=7860,
         allowed_paths=[str(config.examples_dir), str(config.app_dir / "assets")],
         show_error=True,
         inbrowser=False
