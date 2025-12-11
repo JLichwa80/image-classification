@@ -34,8 +34,8 @@ else:
 # Hugging Face Model Repository
 HF_MODEL_REPO = "Jlichwa/Pneumonia-Detector-Models"
 MODEL_FILES = {
-    "stage1": "set2_pneumonia_detector_final.pkl",
-    "stage2": "set2_stage2_bacterial_viral_detector_final.pkl"
+    "stage1": "set2_pneumonia_detector_final_310.pkl",
+    "stage2": "set2_stage2_bacterial_viral_detector_final_310.pkl"
 }
 
 def download_models(models_dir: Path):
@@ -138,5 +138,6 @@ demo.launch(
         server_port=7860,
         allowed_paths=[str(config.examples_dir), str(config.app_dir / "assets")],
         show_error=True,
-        inbrowser=False
+        inbrowser=False,
+        share=True
 )

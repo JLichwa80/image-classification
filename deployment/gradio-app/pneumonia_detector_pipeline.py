@@ -2,8 +2,8 @@ from fastai.vision.all import *
 from pathlib import Path
 
 def load_pneumonia_learners(model_path: str,
-                            stage1_name: str = "set2_pneumonia_detector_final.pkl",
-                            stage2_name: str = "set2_stage2_bacterial_viral_detector_final.pkl"):
+                            stage1_name: str = "set2_pneumonia_detector_final_310.pkl",
+                            stage2_name: str = "set2_stage2_bacterial_viral_detector_final_310.pkl"):
     """
     Helper to load stage 1 and stage 2 learners from a directory.
     """
@@ -48,6 +48,8 @@ def run_pipeline_check(img_orig, learn_stage1, learn_stage2,
         pred_1 = 'normal'
         return pred_1.capitalize(), conf_1, probs_1, None, proc_img_stage1, None
 
+    print("Stage 2 Vocab:", learn_stage2.dls.vocab)  # e.g., might output ['bacteria', 'virus']
+    print("Stage 2 o2i:", learn_stage2.dls.vocab.o2i)  # Shows dict like {'bacteria': 0, 'virus': 1}
     #Predict viral vs bacterial
     _, _, probs_2 = learn_stage2.predict(img)
     viral_idx = learn_stage2.dls.vocab.o2i['viral']

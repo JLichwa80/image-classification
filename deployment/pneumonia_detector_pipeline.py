@@ -39,7 +39,7 @@ def run_pipeline_check(img_orig, learn_stage1, learn_stage2,
     conf_1 = prob_pneumonia
 
     dl1 = learn_stage1.dls.test_dl([img])
-    xb1 = dl1.one_batch()[0]           
+    xb1 = dl1.one_batch()[0]
 
     # decode image
     proc_img_stage1 = learn_stage1.dls.after_batch.decode((xb1,))[0][0].cpu()

@@ -1,14 +1,3 @@
-# Image files
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.bmp
-*.tiff
-*.tif
-*.webp
-*.svg
-*.ico
 
 # Data directory (likely contains images)
 data/

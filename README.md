@@ -98,6 +98,9 @@ This notebook requires GPU for efficient training:
 
 ---
 
+## Demo App
+- [PneumoniaDetector](https://huggingface.co/spaces/Jlichwa/Pneumonia-Detector)
+
 ## Authors
 
 - [@JLichwa80](https://github.com/JLichwa80)

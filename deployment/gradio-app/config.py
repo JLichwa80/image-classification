@@ -10,8 +10,8 @@ class AppConfig:
     examples_dir: Path
     counter_file: Path
 
-    stage1_model_path: str = 'models/set2_pneumonia_detector.pkl'
-    stage2_model_path: str = 'models/set2_stage2_bacterial_viral_detector.pkl'
+    stage1_model_path: str = 'models/set2_pneumonia_detector_final_310.pkl'
+    stage2_model_path: str = 'models/set2_stage2_bacterial_viral_detector_final_310.pkl'
 
     clahe_clip_limit: float = 2.0
     clahe_tile_grid_size: tuple = (8, 8)
