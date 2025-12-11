@@ -43,13 +43,13 @@ The project implements a two-stage hierarchical classification pipeline using tr
 - **Stage 1:** Binary classification (Normal vs Pneumonia)
 - **Stage 2:** Pneumonia subtype classification (Bacterial vs Viral)
 
-![Complete Pipeline Diagram](deployment/gradio-app/content/images/pipeline_diagram.png)
+![Complete Pipeline Diagram](res/architecture.png)
 
 Two training sets are compared:
 - **Set 1:** Baseline grayscale X-rays with moderate augmentation
 - **Set 2:** CLAHE-enhanced X-rays with aggressive augmentation
 
-Training uses stratified 80/20 train/validation splits with class-weighted loss functions to handle data imbalance. Run `code/Pneumonia.ipynb` to reproduce the full pipeline including preprocessing, training, and evaluation.
+Training uses stratified 80/20 train/validation splits with class-weighted loss functions to handle data imbalance. Run `code/PneumoniaDetector.ipynb` to reproduce the full pipeline including preprocessing, training, and evaluation.
 
 ---
 
@@ -75,7 +75,7 @@ Download the [Kaggle Chest X-Ray Images dataset](https://www.kaggle.com/datasets
 
 ### 3. Mount Google Drive and Update Project Path
 
-Open `code/test.ipynb` in Google Colab and mount your Google Drive:
+Open `code/PneumoniaDetector.ipynb` in Google Colab and mount your Google Drive:
 
 ```python
 from google.colab import drive
@@ -95,12 +95,6 @@ This notebook requires GPU for efficient training:
 1. Go to **Runtime → Change runtime type**
 2. Select **GPU** as the hardware accelerator
 3. Run all cells sequentially
-
----
-
-## Deployment (Gradio)
-
-A lightweight Gradio interface is available under `deployment/gradio-app/`. Install the dependencies from `requirements.txt`, then run `python deployment/gradio-app/app.py` to launch the local demo and explore the preprocessing stages plus two-stage predictions without opening the notebook.
 
 ---
 

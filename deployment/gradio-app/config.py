@@ -17,8 +17,8 @@ class AppConfig:
     clahe_tile_grid_size: tuple = (8, 8)
     clahe_colormap: str = 'HOT'
 
-    stage_1_key: str = 'Stage 1 - Pneumonia Detection'
-    stage_2_key: str = 'Stage 2 - Pneumonia Type'
+    stage_1_key: str = 'Stage 1: Pneumonia Detection'
+    stage_2_key: str = 'Stage 2: Pneumonia Type'
 
     @property
     def clahe_settings(self) -> Dict:

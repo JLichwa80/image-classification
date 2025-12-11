@@ -23,6 +23,8 @@ models/
 
 # Python
 __pycache__/
+*.pyc
+*.pyo
 *.py[cod]
 *$py.class
 *.so
@@ -41,3 +43,6 @@ ENV/
 *.swp
 *.swo
 *~
+
+# Local config
+*.local.json

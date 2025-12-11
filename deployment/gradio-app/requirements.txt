@@ -7,3 +7,6 @@ Pillow
 numpy
 matplotlib
 scikit-image
+scikit-learn
+pandas
+huggingface_hub

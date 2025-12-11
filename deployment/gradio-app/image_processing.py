@@ -4,6 +4,9 @@ import pandas as pd
 from PIL import Image
 import logging
 
+# Import the prediction pipeline (same as Colab)
+from pneumonia_detector_pipeline import run_pipeline_check
+
 logger = logging.getLogger(__name__)
 
 from utils import (
@@ -11,6 +14,7 @@ from utils import (
     format_prediction_dataframe, format_batch_summary_markdown,
     get_diagnosis_info, create_composite_image
 )
+
 
 
 def preprocessing_data(img, clahe_settings):
@@ -154,3 +158,4 @@ def _run_model_pipeline(pil_img, stage1_model, stage2_model, clahe_settings, sta
         result[stage_2_key] = {"Note": "Stage 2 skipped - no pneumonia detected"}
 
     return snapshots, metrics, histograms, result
+``
