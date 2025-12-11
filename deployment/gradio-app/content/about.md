@@ -9,7 +9,7 @@ This application demonstrates a **two-stage hierarchical classification pipeline
 
 | End-to-end two-stage pipeline |
 | --- |
-| ![Pipeline Diagram](gradio_api/file=content/images/pipeline_diagram.png) |
+| ![Pipeline Diagram](gradio_api/file=images/pipeline_diagram.png) |
 
 ### Preprocessing Pipeline
 All images undergo a multi-stage preprocessing pipeline:
