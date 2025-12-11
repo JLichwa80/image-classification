@@ -2,10 +2,13 @@ import cv2
 import numpy as np
 import pandas as pd
 from PIL import Image
-import logging
 
-# Import the prediction pipeline (same as Colab)
+import logging
+from custom_transforms import EnsureGrayscale, CLAHETransform, ColormapTransform, FastFocalLoss
+
+# Import the working prediction pipeline
 from pneumonia_detector_pipeline import run_pipeline_check
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +18,10 @@ from utils import (
     get_diagnosis_info, create_composite_image
 )
 
+
+# =============================================================================
+# VISUALIZATION/PREPROCESSING FUNCTIONS (Histograms, metrics, image stages)
+# =============================================================================
 
 
 def preprocessing_data(img, clahe_settings):
@@ -54,14 +61,65 @@ def preprocessing_data(img, clahe_settings):
     return snapshots, metrics, histograms
 
 
+# =============================================================================
+# UI FUNCTIONS (Combine prediction + visualization for Gradio)
+# =============================================================================
+
+def _convert_prediction_to_result_dict(prediction, confidence, probs_1, probs_2,
+                                        stage1_model, stage2_model, stage_1_key, stage_2_key):
+    """
+    Convert run_pipeline_check output to the result dict format used by UI.
+    """
+    # Get probabilities from tensors
+    pneumonia_idx = stage1_model.dls.vocab.o2i['pneumonia']
+    normal_idx = stage1_model.dls.vocab.o2i['normal']
+    prob_pneumonia = probs_1[pneumonia_idx].item()
+    prob_normal = probs_1[normal_idx].item()
+
+    result = {
+        stage_1_key: {
+            "Prediction": "Pneumonia" if prob_pneumonia >= 0.5 else "Normal",
+            "Normal": f"{prob_normal:.4f}",
+            "Pneumonia": f"{prob_pneumonia:.4f}"
+        }
+    }
+
+    if probs_2 is not None:
+        viral_idx = stage2_model.dls.vocab.o2i['viral']
+        bacterial_idx = stage2_model.dls.vocab.o2i['bacterial']
+        prob_viral = probs_2[viral_idx].item()
+        prob_bacterial = probs_2[bacterial_idx].item()
+
+        result[stage_2_key] = {
+            "Prediction": prediction,
+            "Bacterial": f"{prob_bacterial:.4f}",
+            "Viral": f"{prob_viral:.4f}"
+        }
+    else:
+        result[stage_2_key] = {"Note": "Stage 2 skipped - no pneumonia detected"}
+
+    return result
+
+
 def predict_single(input_image, stage1_model, stage2_model, clahe_settings, classification_icons,
                    stage_1_key, stage_2_key, counter_message_fn, increment_counter_fn):
+    """Single image prediction with visualization."""
     if input_image is None:
         return (None, None, None, None, None, None, pd.DataFrame(), pd.DataFrame(), pd.DataFrame(),
                 None, counter_message_fn())
 
-    snapshots, metrics, histograms, result = _run_model_pipeline(
-        input_image, stage1_model, stage2_model, clahe_settings, stage_1_key, stage_2_key
+    # Step 1: Get prediction using run_pipeline_check (returns 6 values)
+    prediction, confidence, probs_1, probs_2, proc_img_1, proc_img_2 = run_pipeline_check(
+        input_image, stage1_model, stage2_model
+    )
+
+    # Step 2: Get visualization (histograms, metrics, image stages)
+    snapshots, metrics, histograms = preprocessing_data(input_image, clahe_settings)
+
+    # Step 3: Convert prediction to result dict for UI
+    result = _convert_prediction_to_result_dict(
+        prediction, confidence, probs_1, probs_2,
+        stage1_model, stage2_model, stage_1_key, stage_2_key
     )
 
     gray_img, clahe_img, colored_img = snapshots
@@ -81,6 +139,7 @@ def predict_single(input_image, stage1_model, stage2_model, clahe_settings, clas
 
 def predict_batch(image_files, stage1_model, stage2_model, clahe_settings,
                   stage_1_key, stage_2_key, counter_message_fn, increment_counter_fn):
+    """Batch image prediction with visualization."""
     if not image_files:
         return [], [], "*Upload images to see summary*", counter_message_fn()
 
@@ -93,8 +152,18 @@ def predict_batch(image_files, stage1_model, stage2_model, clahe_settings,
         with Image.open(img_file.name) as img:
             pil_img = img.convert("RGB")
 
-        snapshots, metrics, histograms, result = _run_model_pipeline(
-            pil_img, stage1_model, stage2_model, clahe_settings, stage_1_key, stage_2_key
+        # Step 1: Get prediction (returns 6 values)
+        prediction, confidence, probs_1, probs_2, proc_img_1, proc_img_2 = run_pipeline_check(
+            pil_img, stage1_model, stage2_model
+        )
+
+        # Step 2: Get visualization
+        snapshots, metrics, histograms = preprocessing_data(pil_img, clahe_settings)
+
+        # Step 3: Convert to result dict
+        result = _convert_prediction_to_result_dict(
+            prediction, confidence, probs_1, probs_2,
+            stage1_model, stage2_model, stage_1_key, stage_2_key
         )
 
         gray_img, clahe_img, colored_img = snapshots
@@ -108,54 +177,3 @@ def predict_batch(image_files, stage1_model, stage2_model, clahe_settings,
     summary_md = format_batch_summary_markdown(len(image_files), clahe_settings)
 
     return images_colored, all_stage_images, summary_md, counter_message_fn()
-
-
-def _run_model_pipeline(pil_img, stage1_model, stage2_model, clahe_settings, stage_1_key, stage_2_key):
-    snapshots, metrics, histograms = preprocessing_data(pil_img, clahe_settings)
-
-    dl1 = stage1_model.dls.test_dl([pil_img])
-    _, preds1, _, dec1 = stage1_model.get_preds(dl=dl1, with_input=True, with_decoded=True)
-    probs1 = preds1[0]
-    pred1 = dec1[0]
-    vocab1 = stage1_model.dls.vocab
-    logger.info(f"[STAGE1] Vocab: {vocab1}")
-    logger.info(f"[STAGE1] Raw probs: {probs1}")
-    logger.info(f"[STAGE1] Result: {pred1} ({vocab1[0]}={float(probs1[0]):.2%}, {vocab1[1]}={float(probs1[1]):.2%})")
-
-    result = {
-        stage_1_key: {
-            "Prediction": str(pred1),
-            "Normal": f"{float(probs1[0]):.4f}",
-            "Pneumonia": f"{float(probs1[1]):.4f}"
-        }
-    }
-
-    # pred1 could be tensor index (0/1) or class name ('normal'/'pneumonia')
-    vocab1 = stage1_model.dls.vocab
-    # Handle tensor, int, or string
-    pred1_val = pred1.item() if hasattr(pred1, 'item') else pred1
-    if isinstance(pred1_val, int) or str(pred1_val).isdigit():
-        pred1_label = vocab1[int(pred1_val)].lower()
-    else:
-        pred1_label = str(pred1_val).lower()
-    logger.info(f"[STAGE1] pred1 raw: {pred1}, converted: {pred1_val}, label: '{pred1_label}'")
-    if pred1_label == 'pneumonia':
-        dl2 = stage2_model.dls.test_dl([pil_img])
-        _, preds2, _, dec2 = stage2_model.get_preds(dl=dl2, with_input=True, with_decoded=True)
-        probs2 = preds2[0]
-        pred2 = dec2[0]
-        vocab2 = stage2_model.dls.vocab
-        logger.info(f"[STAGE2] Vocab: {vocab2}")
-        logger.info(f"[STAGE2] Raw probs: {probs2}")
-        logger.info(f"[STAGE2] Result: {pred2} ({vocab2[0]}={float(probs2[0]):.2%}, {vocab2[1]}={float(probs2[1]):.2%})")
-        result[stage_2_key] = {
-            "Prediction": str(pred2),
-            "Bacterial": f"{float(probs2[0]):.4f}",
-            "Viral": f"{float(probs2[1]):.4f}"
-        }
-    else:
-        logger.info(f"[STAGE2] Skipped - no pneumonia detected")
-        result[stage_2_key] = {"Note": "Stage 2 skipped - no pneumonia detected"}
-
-    return snapshots, metrics, histograms, result
-``
