@@ -1,6 +1,6 @@
 # Pneumonia Detection from Chest X-rays
 
-> Deep learning classification of chest X-ray images to detect pneumonia and distinguish between bacterial and viral infections.
+Deep learning classification of chest X-ray images to detect pneumonia and distinguish between bacterial and viral infections.
 
 ---
 
