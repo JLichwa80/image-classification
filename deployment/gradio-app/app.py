@@ -24,24 +24,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Handle path compatibility between Windows and Linux
-# Models saved on Windows use WindowsPath, but Linux needs PosixPath
-<<<<<<< HEAD
-# Handle path compatibility between Windows and Linux
-# Models saved on Windows use WindowsPath, but Linux needs PosixPath
-=======
->>>>>>> f0cdb62a83a487e2bf9566f74ba87b852f3ca810
 if platform.system() == 'Windows':
     pathlib.PosixPath = pathlib.WindowsPath
 else:
     # Running on Linux (e.g., Hugging Face Spaces) - need to handle Windows-saved models
     pathlib.WindowsPath = pathlib.PosixPath
-<<<<<<< HEAD
-else:
-    # Running on Linux (e.g., Hugging Face Spaces) - need to handle Windows-saved models
-    pathlib.WindowsPath = pathlib.PosixPath
-=======
->>>>>>> f0cdb62a83a487e2bf9566f74ba87b852f3ca810
 
 # Hugging Face Model Repository
 HF_MODEL_REPO = "Jlichwa/Pneumonia-Detector-Models"
@@ -150,10 +137,10 @@ demo = create_app_ui(
 import os
 os.environ['GRADIO_ANALYTICS_ENABLED'] = 'False'
 
-    demo.launch(
+demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
         allowed_paths=[str(config.examples_dir), str(config.app_dir / "assets")],
         show_error=True,
         inbrowser=False
-    )
+)
