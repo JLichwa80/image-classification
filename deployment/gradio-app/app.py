@@ -8,15 +8,11 @@ import sys
 
 from huggingface_hub import hf_hub_download
 
-<<<<<<< HEAD
 # Import ALL custom transform classes - required for model unpickling
 from custom_transforms import (
     CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID_SIZE, COLORMAP_SELECTION,
     EnsureGrayscale, CLAHETransform, ColormapTransform, FastFocalLoss
 )
-=======
-from custom_transforms import CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID_SIZE, COLORMAP_SELECTION
->>>>>>> f0cdb62a83a487e2bf9566f74ba87b852f3ca810
 from config import AppConfig
 from view import create_app_ui
 from image_processing import predict_single, predict_batch
