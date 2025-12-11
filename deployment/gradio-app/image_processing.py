@@ -18,12 +18,6 @@ from utils import (
     get_diagnosis_info, create_composite_image
 )
 
-
-# =============================================================================
-# VISUALIZATION/PREPROCESSING FUNCTIONS (Histograms, metrics, image stages)
-# =============================================================================
-
-
 def preprocessing_data(img, clahe_settings):
     pil_img = img.convert("RGB")
     original = np.array(pil_img)
@@ -59,11 +53,6 @@ def preprocessing_data(img, clahe_settings):
     histograms = generate_histograms(gray, clahe_enhanced, colored_rgb)
 
     return snapshots, metrics, histograms
-
-
-# =============================================================================
-# UI FUNCTIONS (Combine prediction + visualization for Gradio)
-# =============================================================================
 
 def _convert_prediction_to_result_dict(prediction, confidence, probs_1, probs_2,
                                         stage1_model, stage2_model, stage_1_key, stage_2_key):

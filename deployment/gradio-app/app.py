@@ -6,6 +6,7 @@ import platform
 import logging
 import sys
 
+import pneumonia_detector_pipeline as pipeline 
 from huggingface_hub import hf_hub_download
 
 # Import ALL custom transform classes - required for model unpickling
@@ -98,22 +99,17 @@ counter = SessionCounter(config.counter_file)
 models_dir = config.app_dir / "models"
 download_models(models_dir)
 
-# Load models
-stage1_path = models_dir / MODEL_FILES["stage1"]
-stage2_path = models_dir / MODEL_FILES["stage2"]
 
-logger.info(f"Loading Stage 1 model from {stage1_path}")
-stage1_model = load_learner(stage1_path)
-logger.info(f"Loading Stage 2 model from {stage2_path}")
-stage2_model = load_learner(stage2_path)
-logger.info("Models loaded")
+logger.info(f"Loading models")
+
+models =  pipeline.load_pneumonia_learners(models_dir)
 
 gr.set_static_paths(paths=[str(config.app_dir / "assets"), str(config.examples_dir)])
 
 
 def handle_single_predict(input_image):
     return predict_single(
-        input_image, stage1_model, stage2_model, config.clahe_settings,
+        input_image, models[0], models[1], config.clahe_settings,
         config.classification_icons, config.stage_1_key, config.stage_2_key,
         counter.message, counter.increment
     )
@@ -121,7 +117,7 @@ def handle_single_predict(input_image):
 
 def handle_batch_predict(image_files):
     return predict_batch(
-        image_files, stage1_model, stage2_model, config.clahe_settings,
+        image_files, models[0], models[1], config.clahe_settings,
         config.stage_1_key, config.stage_2_key, counter.message, counter.increment
     )
 
