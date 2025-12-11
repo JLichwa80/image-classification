@@ -3,11 +3,7 @@ title: Pneumonia Detection - Two-Stage Classification
 emoji: 🫁
 sdk: gradio
 sdk_version: 5.9.1
-<<<<<<< HEAD
 python_version: "3.10"
-=======
-python_version: "3.11"
->>>>>>> f0cdb62a83a487e2bf9566f74ba87b852f3ca810
 app_file: app.py
 pinned: false
 license: mit

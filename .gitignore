@@ -1,14 +1,14 @@
 # Image files
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.bmp
-*.tiff
-*.tif
-*.webp
-*.svg
-*.ico
+*/chest_xray/*.jpg
+*/chest_xray/*.jpeg
+*/chest_xray/*.png
+*/chest_xray/*.gif
+*/chest_xray/*.bmp
+*/chest_xray/*.tiff
+*/chest_xray/*.tif
+*/chest_xray/*.webp
+*/chest_xray/*.svg
+*/chest_xray/*.ico
 
 # Data directory (likely contains images)
 data/
